@@ -1,0 +1,15 @@
+{
+  "name": "lidlbot",
+  "version": "1.0.0",
+  "description": "Testing,interrupting, infesting in your kids ear and nesting",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "glob":"^7.1.3",
+    "tmi.js": "^1.2.1"
+  }
+}
