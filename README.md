@@ -1,6 +1,6 @@
 # LIDL BOT
 
-A lightweight twitch bot ! (hopfully)
+A lightweight twitch bot ! (hopefully)
 
 ## Getting Started
 
