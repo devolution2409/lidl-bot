@@ -52,7 +52,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Devolution** - *eShrug* - [PurpleBooth](https://github.com/devolution2409)
+* **Devolution** - *eShrug* - [Github](https://github.com/devolution2409)
 
 See also the list of [contributors](https://github.com/devolution2409/lidl-bot/contributors) who 
 participated in this project.
