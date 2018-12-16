@@ -23,7 +23,7 @@ To run the bot simply pull the image from docker store/docker hub and run it.
 You have to specify environement variable for the bot authentication credentials. 
 
 ```shell
-docker run devolution2409/lidlbot:stable -e BOT_USERNAME=<BOT USERNAME> -e OAUTH_TOKEN=<YOUR OAUTH TOKEN> -e ROOT_TWITCH_USERNAME=<YOUR TWITCH USERNAME>
+docker run -d devolution2409/lidlbot:stable -e BOT_USERNAME=<BOT USERNAME> -e OAUTH_TOKEN=<YOUR OAUTH TOKEN> -e ROOT_TWITCH_USERNAME=<YOUR TWITCH USERNAME>
 ```
 
 
@@ -37,6 +37,31 @@ docker run devolution2409/lidlbot:stable -e BOT_USERNAME=<BOT USERNAME> -e OAUTH
 
 To generate an OAUTH token that will be valid for the bot, please login in to twitch with the bot account, and go to this page: https://twitchapps.com/tmi/ .
 Click generate and voila.
+
+#### Dockerfile
+
+If you happen to git clone this repository, the following Dockerfile will allow you to launch the bot on docker
+
+```
+FROM node:8.14-alpine
+
+WORKDIR /opt/app/
+
+COPY ./package*.json /opt/app/
+
+COPY app.js /opt/app/
+
+RUN mkdir lidl_core && mkdir lidl_modules
+
+COPY ./lidl_core/* /opt/app/lidl_core/
+
+COPY ./lidl_modules/* /opt/app/lidl_modules/
+
+RUN npm install
+
+CMD ["node","app.js"]
+```
+
 
 
 ## Built With
