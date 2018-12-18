@@ -11,7 +11,7 @@ function echo (target, context, params) {
                 // Join the params into a string:
                 var msg = params.join(' ')
                 // Interrupt attempted slash and dot commands:
-                if (msg.charAt(0) == '/' || msg.charAt(0) == '.' || context.username !== process.env.ROOT_TWITCH_USERNAME) {
+                if (msg.charAt(0) == '/' || msg.charAt(0) == '.' || ( context.tags.mod === '0' && (('#' + context.username)  !== context.channel ))) {
                         msg = 'Nice try @' + context.username + ' SoBayed'
                 }
                 // Send it back to the correct place:

@@ -43,11 +43,14 @@ Click generate and voila.
 If you happen to git clone this repository, the following Dockerfile will allow you to launch the bot on docker
 
 ```
+
 FROM node:8.14-alpine
 
 WORKDIR /opt/app/
 
 COPY ./package*.json /opt/app/
+
+RUN npm install
 
 COPY app.js /opt/app/
 
@@ -57,9 +60,11 @@ COPY ./lidl_core/* /opt/app/lidl_core/
 
 COPY ./lidl_modules/* /opt/app/lidl_modules/
 
-RUN npm install
+ENV OAUTH_TOKEN:<oauth_token> BOT_USERNAME=<bot_username>
 
 CMD ["node","app.js"]
+
+
 ```
 
 
