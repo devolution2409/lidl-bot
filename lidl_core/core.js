@@ -1,3 +1,8 @@
+require('console-info');
+require('console-warn');
+require('console-success');
+require('console-error');
+
 // declaring know commands objects
 let knownCommands = {}
 // Valid commands start with:
@@ -7,26 +12,36 @@ let commandPrefix = '!'
 let client = require('./client.js');
 
 // is client connected here?
+// We use promise to only execute the following if client is connected
 client.chat.connect().then(function(){
-		//client.chat.say("devoluti0n"," :b: ur0k");
-		//if we managed to connect, then we load the modules, else it's pointless
+		//if we managed to connect to twitch, we try to connec to to mongo
+		// OR we only load the modules that  dont need mongo Thonk
+
+		// we managed to connnect both to twich AND to the mongoDB:
+		// we can load the modules
 		//requiring every file in the lidl_modules folder
 		const glob = require('glob');
 		const path = require('path');
 		glob.sync('./lidl_modules/*.js').forEach( function(file){
-					   	console.log(`\nImporting ${file} module !`);
+					   	console.info(`[LIDLBot]\tImporting ${file} module !`);
 					   	var LUL = require(path.resolve(file));
 						//it works PagChomp
 						for (var funcName in LUL){
 							knownCommands[funcName] = LUL[funcName];
-							console.log(`\tSuccessfully registered ${funcName} command !`);
+							console.success(`[LIDLBot]\t\tSuccessfully registered ${funcName} command !`);
 						}
+						console.success(`[LIDLBot]\tSuccessfully imported ${file} module !`);
 		});
+
+		
 
 		//bot will log to stdout any messages sent even if we dont watch them
 		client.chat.join('devoluti0n');
 
 		client.chat.on('PRIVMSG', onMessageHandler);
+		// we can always specialize that later if needed
+		// anyway, the obj.command var will contain WHISPER or PRIVMSG
+		client.chat.on('WHISPER',  onMessageHandler);
 
 
 });
@@ -56,31 +71,19 @@ function onMessageHandler(obj){
 		// Retrieve the function by its name:
 		const command = knownCommands[commandName]
 		// Then call the command with parameters:
-		console.log(`* Executing ${commandName} command for ${obj.username}`)
+		console.info(`* Executing ${commandName} command for ${obj.username}`)
 
 		command(chan, obj, params)
-		console.log(`* Executed ${commandName} command for ${obj.username}`)
+		console.success(`* Executed ${commandName} command for ${obj.username}`)
 	} else {
-		console.log(`* Unknown command ${commandName} from ${obj.username}`)
+		console.warn(`* Unknown command ${commandName} from ${obj.username}`)
 	}
 }
 
-/*
-
-on
+/*dd
 
 
-// Register our event handlers (defined below):
-client.on('message', onMessageHandler)
-client.on('connected', onConnectedHandler)
-client.on('disconnected', onDisconnectedHandler)
 
-// Connect to Twitch:
-client.connect()
-
-// Called every time a message comes in:
-function onMessageHandler (target, context, msg, self) {
-}
 
 
 // Called every time the bot connects to Twitch chat:
