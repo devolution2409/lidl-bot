@@ -23,7 +23,7 @@ To run the bot simply pull the image from docker store/docker hub and run it.
 You have to specify environement variable for the bot authentication credentials. 
 
 ```shell
-docker run -d devolution2409/lidlbot:stable -e BOT_USERNAME=<BOT USERNAME> -e OAUTH_TOKEN=<YOUR OAUTH TOKEN> -e ROOT_TWITCH_USERNAME=<YOUR TWITCH USERNAME>
+docker run -d devolution2409/lidlbot:stable -e BOT_USERNAME=<BOT USERNAME> -e OAUTH_TOKEN=<YOUR OAUTH TOKEN>
 ```
 
 
@@ -66,7 +66,45 @@ CMD ["node","app.js"]
 
 
 ```
+#### Or with docker-compose or docker stack
 
+```
+#docker-compose.yaml
+
+version: '3.1'
+
+services:
+
+  mongo:
+    image: mongo:4.0.4-xenial
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+#  mongo-express:
+#    image: mongo-express
+#    restart: always
+#    ports:
+#      - 8081:8081
+#    environment:
+#      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+#      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+  lidlbot:
+     image: lidlbot:nightly
+     restart: always
+     build:
+       context: .
+     depends_on:
+       - mongo
+     environment:
+       MONGO_DB_USER: root
+       MONGO_DB_PASSWORD: example
+       MONGO_DB_HOST: mongo
+       MONGO_DB_NAME: lidlbot 
+       BOT_USERNAME: <BOT_USERNAME>
+       OAUTH_TOKEN: <OAUTH TOKEN>
+
+```
 
 
 ## Built With
