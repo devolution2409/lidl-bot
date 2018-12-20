@@ -27,7 +27,7 @@ The list of all needed environment variables can be found below.
 docker run -d devolution2409/lidlbot:stable -e BOT_USERNAME=<BOT USERNAME> -e OAUTH_TOKEN=<YOUR OAUTH TOKEN>
 ```
 
-#### Or with docker-compose or docker stack
+#### Or with docker-compose or docker stack deploy
 ```
 version: '3.1'
 
@@ -64,10 +64,7 @@ services:
        BOT_USERNAME: lidler_bot
        OAUTH_TOKEN: wh2qh1sforsenExq69vnaby1s
 ```
-
   
-
-
 #### Environment Variables
 
 * `BOT_USERNAME` - The bot username
@@ -78,6 +75,12 @@ services:
 
 To generate an OAUTH token that will be valid for the bot, please login in to twitch with the bot account, and go to this page: https://twitchapps.com/tmi/ .
 Click generate and voila.
+
+#### Additional info
+
+If you are using the provided docker-compose file, and the mongoDB image throws some error, you can try to use the provided `clean_docker_garbage.sh` script.
+It will clean up docker temporary and trailing images, and can sometime make the mongoDB work again.
+It won't delete any image used by a *running*  container.
 
 ### (Re-)Building the bot 
 #### Dockerfile
