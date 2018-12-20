@@ -24,7 +24,8 @@ You have to specify environment variable for the bot authentication credentials.
 The list of all needed environment variables can be found below.
 
 ```shell
-docker run -d devolution2409/lidlbot:stable -e BOT_USERNAME=<BOT USERNAME> -e OAUTH_TOKEN=<YOUR OAUTH TOKEN>
+docker run -d -e BOT_USERNAME=supa_bot -e OAUTH_TOKEN:123TriEasy -e MONGO_DB_USER:root -e MONGO_DB_PASSWORD:example -e MONGO_DB_HOST:mongo -e MONGO_DB_NAME:lidlbot devolution2409/lidlbot:nightly
+
 ```
 
 #### Or with docker-compose or docker stack deploy
@@ -69,7 +70,11 @@ services:
 
 * `BOT_USERNAME` - The bot username
 * `OAUTH_TOKEN` - The bot OAUTH token with chat permission (see below). Will accept both the full token (oauth:token) or just the token part.
-* more to come but i'm lazy
+* `MONGO_DB_USER` - The mongo db account username
+* `MONGO_DB_PASSWORD` - self-explainatory
+* `MONGO_DB_HOST` -  Hostname or url of the mongo db server. (without mongodb://) If you are using docker make sure that the mongo db container and the lidlbot are on the same user-defined network
+* `MONGO_DB_NAME` - Name of the database the bot will be using
+
 
 #### OAUTH Token
 

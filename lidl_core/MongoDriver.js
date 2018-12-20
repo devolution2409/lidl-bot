@@ -4,45 +4,51 @@ require('console-success');
 
 var mongoose=require('mongoose');
 
+// Exporting a new instance will de-facto create a singleton, which is what we need FeelsGoodMan 
 class MongoDriver{
 	constructor(){
 		if (process.env.MONGO_DB_USER === undefined || process.env.MONGO_DB_PASSWORD === undefined || process.env.MONGO_DB_HOST === undefined || process.env.MONGO_DB_NAME === undefined ){
 			console.error("[LIDLBOT]\tMongoDB environnement variables aen't defined properly. The bot won't be able to use stored commands, or any function that requires a database.");
 		} else {
-
+			
 			this.username = process.env.MONGO_DB_USER;
 			this.password = process.env.MONGO_DB_PASSWORD;
 			this.host = process.env.MONGO_DB_HOST;
 			this.dbname = process.env.MONGO_DB_NAME;
 			this.url = 'mongodb://' + this.username + ':' + this.password + '@' + this.host + ':27017/admin';
 
-
 			this.options = { 
 useNewUrlParser: true,
-//useMongoClient: true //required to remove the "server name must be a string thing"
 			};
 
 			this.connection = mongoose.connection;
-
+			this.actualConnection = mongoose.connection;
 			this.attempts = 0;
 
 			// once we are in, we reset attempts.
-			this.connection.on('open', function() {
+			this.connection.on('open', function(db) {
 					this.attempts = 0 ;			
-					console.success("[LIDLBot]\t Successfully connected to MongoloiDB");
+					console.success("[LIDLBot]\t Successfully connected to MongoloidDB");
 					});
 			// now we connect
-			this.connectAndRetry();
+			this.ConnectAndRetry();
 		}
 	}//end constructor
 	// Function to connect, and force it to retry before MAX_ATTEMPTS
-	connectAndRetry(){
+	ConnectAndRetry(){
 		// eShrug?
 		var that = this;
 		if (this.attempts < 60){
 			let redactedURL = 'mongodb://' + this.username + ':<REDACTED>@' + this.host + ':27017/admin';
 			console.info("[LIDLBot]\tAttempting to connect (" + this.attempts + ") to MongoloidDB: " + redactedURL );
-			mongoose.connect(this.url,this.options);
+			// using promise to switch to MONGO_DB_NAME after connecting forsenE
+			mongoose.connect(this.url,this.options)
+				.then( (db) =>{
+					console.info('[LIDLBot]\t Switching to: ' + process.env.MONGO_DB_NAME); 
+					this.actualConnection = this.connection.useDb(process.env.MONGO_DB_NAME);
+					this.connection.close();
+				});
+	
 
 			// setting time out to occur once it fails only if the number of unsuccessful attempt hasn't been reached
 
@@ -57,9 +63,14 @@ useNewUrlParser: true,
 			console.warn("[LIDLBot}\tCouldn't connect to MongoloidDB");
 		}
 
+	} // end connect and try
+	GetConnection(){
+		return this.actualConnection;
 	}
 
+
+
+
+
 } //end class MongoDriver
-module.exports = {
-client: new MongoDriver()
-}
+module.exports= new MongoDriver();
