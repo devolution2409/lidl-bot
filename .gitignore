@@ -2,3 +2,4 @@ Dockerfile
 *.swp
 docker-compose.yaml
 *.old
+mongo_data/
