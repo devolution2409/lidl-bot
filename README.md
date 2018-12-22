@@ -37,9 +37,6 @@ services:
   mongo:
     image: mongo:4.0.4-xenial
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - ./mongo_data/:/data/db/
   mongo-express:
@@ -47,10 +44,8 @@ services:
     restart: always
     ports:
       - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-  lidlbot:
+  
+ lidlbot:
      image: lidlbot:nightly
      restart: always
      build:
