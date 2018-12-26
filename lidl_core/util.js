@@ -1,3 +1,4 @@
+'use strict'
 module.exports = {
 sendMessage: sendMessage,
 	     sendWhisper: sendWhisper
@@ -14,18 +15,25 @@ function sendMessage (target,message) {
 		console.log("gachipls:" + timesToCut);
 		for (var i = 0; i < Math.floor(timesToCut) + 1 ; i++){
 			messages.push( message.substr(i*500, i*500+500) );		
+			console.log(i);
 		}
 	}else{
 		messages.push(message);
 	}
 
-	
+	// send the first one immediately
+	//client.chat.say(target, messages[0] );
+	/*for (i = 1; i < messages.length; i++){
+		console.log("gnééé:"  +   messages[i]);
+		setTimeout( () => { client.chat.say(target, messages[i] ) }, i*500);
+	}*/
+
 	i = 0;
-	messages.forEach ( (element) => {
-		setTimeout( () => { client.chat.say(target, element) }, i + 500);
+	messages.forEach( (element) => {
+		setTimeout(() => {client.chat.say(target, element)},i * 500)
 		i++;
-		console.log("gneee");
 	});
+	
 }
 
 
