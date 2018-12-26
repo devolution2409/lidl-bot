@@ -23,14 +23,33 @@ client.chat.connect().then(function(){
 		const glob = require('glob');
 		const path = require('path');
 		glob.sync('./lidl_modules/*.js').forEach( function(file){
-					   	console.info(`[LIDLBot]\tImporting ${file} module !`);
-					   	var LUL = require(path.resolve(file));
-						//it works PagChomp
-						for (var funcName in LUL){
-							knownCommands[funcName] = LUL[funcName];
-							console.success(`[LIDLBot]\t\tSuccessfully registered ${funcName} command !`);
+					   	var module = require(path.resolve(file));
+						
+						// if this module is a class (probably an ASYNC one) 
+						// and has an initialized property, and it is a promise:
+						if (module.initialized !== undefined && Promise.resolve(module.initialized) == module.initialized){
+					   		console.info(`[LIDLBot]\tImporting ASYNC module: ${file} !`);
+								
+						
+							module.initialized.then( (data) => {
+								for (var funcName in data){
+									knownCommands[funcName] = data[funcName];
+									console.success(`[LIDLBot]\t\tSuccessfully registered ${funcName} command !`);
+								} 
+							})
+							
+	
+						}else{ 
+					   	console.info(`[LIDLBot]\tImporting SYNC module ${file} !`);
+						// else it's a regular module
+							for (var funcName in module){
+								knownCommands[funcName] = module[funcName];
+								console.success(`[LIDLBot]\t\tSuccessfully registered ${funcName} command !`);
+							}
+						
 						}
 						console.success(`[LIDLBot]\tSuccessfully imported ${file} module !`);
+						
 		});
 
 		

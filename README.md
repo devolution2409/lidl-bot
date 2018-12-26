@@ -110,7 +110,12 @@ ENV OAUTH_TOKEN:<oauth_token> BOT_USERNAME=<bot_username>
 CMD ["node","app.js"]
 
 ```
+### TODO
 
+ - [ ] Different folders for sync and async modules
+ - [ ] Standardize the way modules send back data?
+ - [ ] Template for both async and sync modules
+ - [ ] Add env variables to mongo-express so that the web interface requires login 
 
 ## Built With
 
@@ -129,6 +134,9 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 See also the list of [contributors](https://github.com/devolution2409/lidl-bot/contributors) who 
 participated in this project.
+
+## Thanks
+* **CBeeni** - *help with mongo request*
 
 ## License
 

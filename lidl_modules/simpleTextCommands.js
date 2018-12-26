@@ -4,33 +4,50 @@ require('console-info');
 require('console-warn');
 require('console-error');
 require('console-success');
+//var Promise = require('Promise');
 
+class commandsWrapper{
+	constructor(){
 
+		this.commands = [];
+		this.initialized  = new Promise( (resolve,reject) => {
+				let that = this; // have to do else the nested promises eventually lose context pajaC
+				driver.GetConnection().once('connected', () =>{
+						let mongoose = require('mongoose');
+						//	let Schema = mongoose.Schema;
+						const commandSchema = mongoose.Schema({ name: String, response: Object});	
 
-let knownCommands = [];
-driver.GetConnection().once('connected', function(){
-		let mongoose = require('mongoose');
-		//	let Schema = mongoose.Schema;
-		const commandSchema = mongoose.Schema({ name: String, response: Object});	
+						const commandModel = mongoose.model('commands', commandSchema)
+						let temp = [];
+						// selecting only the command name, but unfortunately we also fetch the unique id, look into that later
+						// using lean() do get it as plain json object and not mongoose document object
+						commandModel.find({},'name').lean().exec( (err,command) => {
+								if (err){
+									reject(err);
 
-		const commandModel = mongoose.model('commands', commandSchema)
+								}else{
+									let data  = {};									
 
+									command.forEach(function(thing) {
+										//						console.log(thing.name);
+										that.commands.push(thing.name);		
+										data[thing.name] = michel;
+										});
 
-		// selecting only the command name, but unfortunately we also fetch the unique id, look into that later
-		// using lean() do get it as plain json object and not mongoose document object
-		commandModel.find({},'name').lean().exec( function(err,commands){
-				console.log("TRihard: ")
-				//	console.log(docs);
-				commands.forEach(function(thing) {
-						console.log(thing.name);
-						knownCommands.push(thing.name);			
-						});
+									resolve(data);
+								}
+								//		module.exports.commands = knownCommands;
+							})
+				});
+		});
+	}
 
-				});	
-});
+}
+module.exports = new commandsWrapper();
 
-	
-
+function michel(){
+	console.log('toutafé thiery');
+}
 
 //console.log(cursor);
 
@@ -65,9 +82,5 @@ console.log(`* Nothing to echo`);
 }
 
 
-*/
-module.exports = { 
-	listOfCommands: knownCommands
-
-}
+ */
 

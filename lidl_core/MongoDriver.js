@@ -41,7 +41,7 @@ useNewUrlParser: true,
 	// Function to connect, and force it to retry before MAX_ATTEMPTS
 	ConnectAndRetry(){
 		// eShrug?
-		var that = this;
+		let that = this;
 		if (this.attempts < 60){
 			let redactedURL = 'mongodb://' + this.username + ':<REDACTED>@' + this.host + ':27017/admin';
 			console.info("[LIDLBot]\tAttempting to connect (" + this.attempts + ") to MongoloidDB: " + redactedURL );
