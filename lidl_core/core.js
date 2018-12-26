@@ -92,7 +92,7 @@ function onMessageHandler(obj){
 		// Then call the command with parameters:
 		console.info(`* Executing ${commandName} command for ${obj.username}`)
 
-		command(chan, obj, params)
+		command(chan, obj, params,commandName);
 		console.success(`* Executed ${commandName} command for ${obj.username}`)
 	} else {
 		console.warn(`* Unknown command ${commandName} from ${obj.username}`)
