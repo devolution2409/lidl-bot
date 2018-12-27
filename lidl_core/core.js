@@ -61,6 +61,7 @@ client.chat.connect().then(function(){
 
 		//bot will log to stdout any messages sent even if we dont watch them
 		client.chat.join('devoluti0n');
+		client.chat.join('forsen');
 
 		client.chat.on('PRIVMSG', onMessageHandler);
 		// we can always specialize that later if needed
