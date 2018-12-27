@@ -12,10 +12,10 @@ function sendMessage (target,message) {
 	let timesToCut = (message.length / 500);
 	let messages = [];
 	if (timesToCut > 0){
-		console.log("gachipls:" + timesToCut);
+//		console.log("gachipls:" + timesToCut);
 		for (var i = 0; i < Math.floor(timesToCut) + 1 ; i++){
 			messages.push( message.substr(i*500, i*500+500) );		
-			console.log(i);
+//			console.log(i);
 		}
 	}else{
 		messages.push(message);

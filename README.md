@@ -136,7 +136,7 @@ See also the list of [contributors](https://github.com/devolution2409/lidl-bot/c
 participated in this project.
 
 ## Thanks
-* **CBeeni** - *help with mongo request*
+* **CBeeni** - *help with mongo requests*
 
 ## License
 
