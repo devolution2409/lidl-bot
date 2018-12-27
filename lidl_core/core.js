@@ -52,7 +52,8 @@ client.chat.connect().then(function(){
 						
 		});
 
-		
+		//adding help command:
+		knownCommands['help'] =  showAvailableCommands;		
 
 		//bot will log to stdout any messages sent even if we dont watch them
 		client.chat.join('devoluti0n');
@@ -97,6 +98,19 @@ function onMessageHandler(obj){
 	} else {
 		console.warn(`* Unknown command ${commandName} from ${obj.username}`)
 	}
+}
+
+
+function showAvailableCommands(target,obj,params,commandName){
+	let util = require('../lidl_core/util.js');
+
+	let msg = "Available commands are: "
+	for (var command in knownCommands){
+		msg = msg + "!" + command + " ";
+	}
+	util.sendMessage(target,  msg);
+
+
 }
 
 /*dd
