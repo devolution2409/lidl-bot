@@ -5,6 +5,10 @@ require('console-error');
 
 // declaring know commands objects
 let knownCommands = {}
+
+//declaring an array containing the users cooling down
+let usersCD = [] // forsenCD
+
 // Valid commands start with:
 let commandPrefix = '!'
 
@@ -73,8 +77,13 @@ function onMessageHandler(obj){
 
 	// This isn't a command since it has no prefix:
 	if (msg.substr(0, 1) !== commandPrefix) {
-		return
+		return;
 	}	
+	// if the user is still in cooldown, we return
+	if (usersCD.indexOf(obj.username) !== -1){
+		// we send a PM
+		return;
+	}
 
 
 	// get the channel
@@ -91,12 +100,20 @@ function onMessageHandler(obj){
 		// Retrieve the function by its name:
 		const command = knownCommands[commandName]
 		// Then call the command with parameters:
-		console.info(`* Executing ${commandName} command for ${obj.username}`)
-
+		console.info(`* Executing ${commandName} command for ${obj.username}`);
 		command(chan, obj, params,commandName);
-		console.success(`* Executed ${commandName} command for ${obj.username}`)
+		console.success(`* Executed ${commandName} command for ${obj.username}`);
+		// Add the user to the usersCD array, only if not mod tho
+		if ( obj.tags.mod === '0' && (('#' + obj.username)  !== obj.channel)){
+			usersCD.push(obj.username);
+			setTimeout( ()  => { 
+					let temp = usersCD.filter( (value,index,arr) => { return value !== obj.username    }  );
+					usersCD = temp;
+			
+				 }, process.env.BOT_COMMANDS_COOLDOWN || 10000  ); 
+		}
 	} else {
-		console.warn(`* Unknown command ${commandName} from ${obj.username}`)
+		console.warn(`* Unknown command ${commandName} from ${obj.username}`);
 	}
 }
 
@@ -104,7 +121,7 @@ function onMessageHandler(obj){
 function showAvailableCommands(target,obj,params,commandName){
 	let util = require('../lidl_core/util.js');
 
-	let msg = "Available commands are: "
+	let msg = "Cooldown per user: " + (process.env.BOT_COMMANDS_COOLDOWN/1000 || 10000/1000)   + " seconds. Available commands are: "
 	for (var command in knownCommands){
 		msg = msg + "!" + command + " ";
 	}

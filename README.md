@@ -116,6 +116,8 @@ CMD ["node","app.js"]
  - [ ] Standardize the way modules send back data?
  - [ ] Template for both async and sync modules
  - [ ] Add env variables to mongo-express so that the web interface requires login 
+ - [ ] !reload command to reload the async modules
+ - [ ] Cooldown per user AND per channel
 
 ## Built With
 
