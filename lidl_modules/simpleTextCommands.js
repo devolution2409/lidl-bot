@@ -58,6 +58,8 @@ function simpleCommand(channel,context,params,commandName){
 			} else {
 			let msg = "wtf? I should be able to run this command DansGame";
 
+			let answers = [];
+			
 			// test if the command is modOnly..
 			if ( (response.modOnly === '1')    && (context.tags.mod === '0' && (('#' + context.username)  !== context.channel ))) {
 			msg = 'Nice try @' + context.username + ' SoBayed';
@@ -71,16 +73,40 @@ function simpleCommand(channel,context,params,commandName){
 			if (typeof(response.response) === 'string'){
 			msg = response.response;		
 
-			} else { // it is an object => subcommand
-				//do we have more parameters? if no, we send stuff
+			} else {
+				//it is an object => subcommand
+				// define generic parser that pull a random fact, regardless of parameters
+				let parse  = (obj) => {
+					for (var k in obj){
+						if (typeof(obj[k]) == 'object' && obj[k] !== null){
+							// even arrays return object, we need to test for arrays of objects  before sending it to parse
+							// if it is an array, we need to test if it's an array of obj or not
+							// if array of obj, we need to parse them right?
+							if (Array.isArray(obj[k])){
+								obj[k].forEach ( (value) => { 
+										if (typeof(value) == 'object'){
+										parse(value);
+										} else if (k !== 'alias') { // its a string, but it mustn't be 'alias'
+										answers.push(value);
+										}
+										});	
+							} else{
+								parse(obj);
+							}		
+
+						}
+					}								
+
+				};
+
+		
+				// if we get parameter, we need to use a specific parser to find a fact
+				// if the parameters were retarded, we send a random fact		
 				if (params && params.join(' ') !== ''){
-					//code for specific stuff here
-
-
-				} else {
-					let answers = [];
-					//defining our parser function object	
-					let parse  = (obj) => {
+					//specific parser
+					console.log (params)
+					params.forEach( (test) => {console.log(test)});
+					let  specificParse  = (obj) => {
 						for (var k in obj){
 							if (typeof(obj[k]) == 'object' && obj[k] !== null){
 								// even arrays return object, we need to test for arrays of objects  before sending it to parse
@@ -89,25 +115,38 @@ function simpleCommand(channel,context,params,commandName){
 								if (Array.isArray(obj[k])){
 									obj[k].forEach ( (value) => { 
 										if (typeof(value) == 'object'){
-											parse(value);
-										} else if (k !== 'alias') { // its a string, but it mustn't be 'alias'
-											answers.push(value);
-										}
+											// we need to go deeper only if the object.alias contains parameter 
+											if (value.hasOwnProperty('alias')){
+											 	console.log(value.alias);	
+												//https://stackoverflow.com/questions/16312528/check-if-an-array-contains-any-element-of-another-array-in-javascript
+												if (value.alias.some( r => params.indexOf(r) !== -1)){
+													answers = value.res;
+												}
+										
+											}
+					
+										} 
 									});	
 								} else{
-									parse(obj);
+									specificParse(obj);
 								}		
 
 							}
 						}								
 
 					};
+					specificParse(response);
+					// if after parsing, the answers array is empty, we need to parse norrmaly
+					if (answers.length === 0){
+						parse(response);	
+					}
+
+				} else {
+					//defining our parser function object	
 					parse(response);
+				}
 					//now that the json is parsed we need to take a random element
 					msg = answers[Math.floor(Math.random()*answers.length)];
-					console.log(answers);
-				}
-
 
 			}
 
