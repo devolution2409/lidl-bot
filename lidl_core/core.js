@@ -4,7 +4,9 @@ require('console-success');
 require('console-error');
 
 // declaring know commands objects
-let knownCommands = {}
+//let knownCommands = {}
+let syncCommands = {};
+let asyncCommands = {};
 
 //declaring an array containing the users cooling down
 let usersCD = [] // forsenCD
@@ -14,6 +16,8 @@ let commandPrefix = '!'
 
 //fetching the client
 let client = require('./client.js');
+const glob = require('glob');
+const path = require('path');
 
 // is client connected here?
 // We use promise to only execute the following if client is connected
@@ -24,40 +28,30 @@ client.chat.connect().then(function(){
 		// we managed to connnect both to twich AND to the mongoDB:
 		// we can load the modules
 		//requiring every file in the lidl_modules folder
-		const glob = require('glob');
-		const path = require('path');
-		glob.sync('./lidl_modules/*.js').forEach( function(file){
+		console.info('[LIDLBot] \t Importing SYNC modules:');
+
+		glob.sync('./lidl_modules/sync/*.js').forEach( function(file){
 					   	var module = require(path.resolve(file));
 						
-						// if this module is a class (probably an ASYNC one) 
-						// and has an initialized property, and it is a promise:
-						if (module.initialized !== undefined && Promise.resolve(module.initialized) == module.initialized){
-					   		console.info(`[LIDLBot]\tImporting ASYNC module: ${file} !`);
-								
-						
-							module.initialized.then( (data) => {
-								for (var funcName in data){
-									knownCommands[funcName] = data[funcName];
-									console.success(`[LIDLBot]\t\tSuccessfully registered ${funcName} command !`);
-								} 
-							})
-							
-	
-						}else{ 
 					   	console.info(`[LIDLBot]\tImporting SYNC module ${file} !`);
 						// else it's a regular module
 							for (var funcName in module){
-								knownCommands[funcName] = module[funcName];
+								syncCommands[funcName] = module[funcName];
 								console.success(`[LIDLBot]\t\tSuccessfully registered ${funcName} command !`);
 							}
 						
-						}
 						console.success(`[LIDLBot]\tSuccessfully imported ${file} module !`);
 						
 		});
 
+		// getting the async commands 
+		reloadAsyncCommands();		
+
+
 		//adding help command:
-		knownCommands['help'] =  showAvailableCommands;		
+		syncCommands['help'] =  showAvailableCommands;		
+		//adding reload command:
+		syncCommands['reload'] = reloadAsyncCommands;
 
 		//bot will log to stdout any messages sent even if we dont watch them
 		client.chat.join('devoluti0n');
@@ -69,6 +63,9 @@ client.chat.connect().then(function(){
 		client.chat.on('WHISPER',  onMessageHandler);
 
 
+
+
+	
 });
 
 function onMessageHandler(obj){
@@ -97,9 +94,25 @@ function onMessageHandler(obj){
 	// The rest (if any) are the parameters:
 	const params = parse.splice(1)
 	// If the command is known, let's execute it:
-	if (commandName in knownCommands) {
+	if (commandName in syncCommands) {
 		// Retrieve the function by its name:
-		const command = knownCommands[commandName]
+		const command = syncCommands[commandName]
+		// Then call the command with parameters:
+		console.info(`* Executing ${commandName} command for ${obj.username}`);
+		command(chan, obj, params,commandName);
+		console.success(`* Executed ${commandName} command for ${obj.username}`);
+		// Add the user to the usersCD array, only if not mod tho
+		if ( obj.tags.mod === '0' && (('#' + obj.username)  !== obj.channel)){
+			usersCD.push(obj.username);
+			setTimeout( ()  => { 
+					let temp = usersCD.filter( (value,index,arr) => { return value !== obj.username    }  );
+					usersCD = temp;
+			
+				 }, process.env.BOT_COMMANDS_COOLDOWN || 10000  ); 
+		}
+	} else if (commandName in asyncCommands) {
+		// Retrieve the function by its name:
+		const command = asyncCommands[commandName]
 		// Then call the command with parameters:
 		console.info(`* Executing ${commandName} command for ${obj.username}`);
 		command(chan, obj, params,commandName);
@@ -120,16 +133,56 @@ function onMessageHandler(obj){
 
 
 function showAvailableCommands(target,obj,params,commandName){
-	let util = require('../lidl_core/util.js');
+	let util = require('./util.js');
 
 	let msg = "Cooldown per user: " + (process.env.BOT_COMMANDS_COOLDOWN/1000 || 10000/1000)   + " seconds. Available commands are: "
-	for (var command in knownCommands){
+	for (var command in syncCommands){
 		msg = msg + "!" + command + " ";
 	}
+	for (var command in asyncCommands){
+		msg = msg + "!" + command + " ";
+
+	}	
 	util.sendMessage(target,  msg);
 
 
 }
+
+function reloadAsyncCommands(){
+		asyncCommands = {} ;
+		console.info('[LIDLBot] \t Importing ASYNC modules:');
+		glob.sync('./lidl_modules/async/*.js').forEach( function(file){
+						// need to invalidate cache afterwards, else it will just import the same cached variables
+
+					   	var module = require(path.resolve(file));
+						// if this module is a class (probably an ASYNC one) 
+						// and has an initialized property, and it is a promise:
+					        module.init();	
+						if (module.initialized !== undefined && Promise.resolve(module.initialized) == module.initialized){
+					   		console.info(`[LIDLBot]\tImporting ASYNC module  ${file} !`);
+								
+						
+							module.initialized.then( (data) => {
+								for (var funcName in data){
+									asyncCommands[funcName] = data[funcName];
+									console.success(`[LIDLBot]\t\tSuccessfully registered ${funcName} command !`);
+								} 
+							});
+							module.initialized.catch( (err) => { console.log (err)});
+							
+	
+						} 
+						
+						console.success(`[LIDLBot]\tSuccessfully imported ${file} module !`);
+						
+		});
+
+
+
+}
+
+
+
 
 /*dd
 
