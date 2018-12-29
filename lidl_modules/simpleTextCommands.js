@@ -138,7 +138,8 @@ function simpleCommand(channel,context,params,commandName){
 
 					};
 					specificParse(response);
-					// if after parsing, the answers array is empty, we need to parse norrmaly
+					// if after parsing, the answers array is empty, we need to parse normaly
+					// there's probably a way to refactor this but eShrug
 					if (answers.length === 0){
 						parse(response);	
 					}
