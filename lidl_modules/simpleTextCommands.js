@@ -117,9 +117,11 @@ function simpleCommand(channel,context,params,commandName){
 										if (typeof(value) == 'object'){
 											// we need to go deeper only if the object.alias contains parameter 
 											if (value.hasOwnProperty('alias')){
-											 	console.log(value.alias);	
+											 	console.log(value.alias);
+												let temp = [];
+												params.forEach( (element) => { element = temp.push(element.toLowerCase());  } );	
 												//https://stackoverflow.com/questions/16312528/check-if-an-array-contains-any-element-of-another-array-in-javascript
-												if (value.alias.some( r => params.indexOf(r) !== -1)){
+												if (value.alias.some( r => temp.indexOf(r) !== -1)){
 													answers = value.res;
 												}
 										
