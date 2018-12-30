@@ -41,3 +41,4 @@ function sendMessage (target,message) {
 function sendWhisper(target, message){
 	client.chat.whisper(target,message);	
 }
+

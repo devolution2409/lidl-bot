@@ -1,40 +1,55 @@
 //requiring the driver
-var driver = require('../lidl_core/MongoDriver.js');
+var driver = require('../../lidl_core/MongoDriver.js');
 require('console-info');
 require('console-warn');
 require('console-error');
 require('console-success');
-let util = require('../lidl_core/util.js');
+let util = require('../../lidl_core/util.js');
+let mongoose = require('mongoose');
 
 class commandsWrapper{
 	constructor(){
+	}
+	// needed so the commands can be reloaded
+	init(){
+		let schema = mongoose.Schema({ name: String, response: Object});	
+		let model
+			try {
+				model = mongoose.model('command');
+
+			} catch (error){
+				model = mongoose.model('command',schema);
+			}
 
 		this.initialized  = new Promise( (resolve,reject) => {
-				//		let that = this; // have to do else the nested promises eventually lose context pajaC
-				driver.GetConnection().once('connected', () =>{
-						let mongoose = require('mongoose');
-						//	let Schema = mongoose.Schema;
-						const commandSchema = mongoose.Schema({ name: String, response: Object});	
-						const commandModel = mongoose.model('command', commandSchema)
 
-						// selecting only the command name, but unfortunately we also fetch the unique id, look into that later
-						// using lean() do get it as plain json object and not mongoose document object
-						commandModel.find({},'name').lean().exec( (err,command) => {
-								if (err){
-								reject(err);
+				var promise = () => { 
+				model.find({},'name').lean().exec( (err,command) => {
+						if (err){
+						reject(err);
 
-								}else{
-								let data  = {};									
+						}else{
+						let data  = {};									
 
-								command.forEach(function(thing) {
-										data[thing.name] = simpleCommand;
-										});
+						command.forEach(function(thing) {
+								data[thing.name] = simpleCommand;
+								});
 
-								resolve(data);
-								}
-								//		module.exports.commands = knownCommands;
-								})
-				});
+						resolve(data);
+						}
+						//		module.exports.commands = knownCommands;
+						});
+				};
+
+
+				// if the connection is ready, we don't need to use the once('connected') event:			
+				if (driver.GetConnection().readyState === 1){ //0: disconnected 1: connected 2: connecting 3: disconnecting				
+					promise();
+				} else {
+					driver.GetConnection().once('connected', () =>{
+							promise();			
+							});
+				}
 		});
 	}
 
@@ -59,7 +74,7 @@ function simpleCommand(channel,context,params,commandName){
 			let msg = "wtf? I should be able to run this command DansGame";
 
 			let answers = [];
-			
+
 			// test if the command is modOnly..
 			if ( (response.modOnly === '1')    && (context.tags.mod === '0' && (('#' + context.username)  !== context.channel ))) {
 			msg = 'Nice try @' + context.username + ' SoBayed';
@@ -99,13 +114,13 @@ function simpleCommand(channel,context,params,commandName){
 
 				};
 
-		
+
 				// if we get parameter, we need to use a specific parser to find a fact
 				// if the parameters were retarded, we send a random fact		
 				if (params && params.join(' ') !== ''){
 					//specific parser
 					console.log (params)
-					params.forEach( (test) => {console.log(test)});
+						params.forEach( (test) => {console.log(test)});
 					let  specificParse  = (obj) => {
 						for (var k in obj){
 							if (typeof(obj[k]) == 'object' && obj[k] !== null){
@@ -114,21 +129,21 @@ function simpleCommand(channel,context,params,commandName){
 								// if array of obj, we need to parse them right?
 								if (Array.isArray(obj[k])){
 									obj[k].forEach ( (value) => { 
-										if (typeof(value) == 'object'){
+											if (typeof(value) == 'object'){
 											// we need to go deeper only if the object.alias contains parameter 
 											if (value.hasOwnProperty('alias')){
-											 	console.log(value.alias);
-												let temp = [];
-												params.forEach( (element) => { element = temp.push(element.toLowerCase());  } );	
-												//https://stackoverflow.com/questions/16312528/check-if-an-array-contains-any-element-of-another-array-in-javascript
-												if (value.alias.some( r => temp.indexOf(r) !== -1)){
-													answers = value.res;
-												}
-										
+											console.log(value.alias);
+											let temp = [];
+											params.forEach( (element) => { element = temp.push(element.toLowerCase());  } );	
+											//https://stackoverflow.com/questions/16312528/check-if-an-array-contains-any-element-of-another-array-in-javascript
+											if (value.alias.some( r => temp.indexOf(r) !== -1)){
+											answers = value.res;
 											}
-					
-										} 
-									});	
+
+											}
+
+											} 
+											});	
 								} else{
 									specificParse(obj);
 								}		
@@ -148,8 +163,8 @@ function simpleCommand(channel,context,params,commandName){
 					//defining our parser function object	
 					parse(response);
 				}
-					//now that the json is parsed we need to take a random element
-					msg = answers[Math.floor(Math.random()*answers.length)];
+				//now that the json is parsed we need to take a random element
+				msg = answers[Math.floor(Math.random()*answers.length)];
 
 			}
 
