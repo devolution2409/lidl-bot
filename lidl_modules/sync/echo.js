@@ -17,7 +17,6 @@ function echo (target, context, params) {
 			}
 			// Send it back to the correct place:
 			util.sendMessage(target,  msg);
-			util.sendWhisper('devoluti0n',"hi again");	
 		} else { // Nothing to echo
 			console.log(`* Nothing to echo`);
 		}
