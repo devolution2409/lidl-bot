@@ -52,11 +52,14 @@ client.chat.connect().then(function(){
 		syncCommands['help'] =  showAvailableCommands;		
 		//adding reload command:
 		syncCommands['reload'] = reloadAsyncCommands;
+		//adding pong
+		syncCommands['ping'] = pong;
 
 		//bot will log to stdout any messages sent even if we dont watch them
 		client.chat.join('devoluti0n');
 		//client.chat.join('forsen');
-
+		client.chat.join('pajlada');
+		client.chat.join('forsen');
 		client.chat.on('PRIVMSG', onMessageHandler);
 		// we can always specialize that later if needed
 		// anyway, the obj.command var will contain WHISPER or PRIVMSG
@@ -182,7 +185,12 @@ function reloadAsyncCommands(){
 }
 
 
+function pong(target,obj,params,commandsName){
+	let util = require ('./util.js');
+	let msg = "I'm here :wave: forsenE";
+	util.sendMessage(target,msg);
 
+}
 
 /*dd
 
