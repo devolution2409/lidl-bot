@@ -8,6 +8,9 @@ require('console-error');
 let syncCommands = {};
 let asyncCommands = {};
 
+// won't show in help
+let hiddenSyncCommands = {};
+
 //declaring an array containing the users cooling down
 let usersCD = [] // forsenCD
 
@@ -51,9 +54,12 @@ client.chat.connect().then(function(){
 		//adding help command:
 		syncCommands['help'] =  showAvailableCommands;		
 		//adding reload command:
-		syncCommands['reload'] = reloadAsyncCommands;
+		hiddenSyncCommands['reload'] = reloadAsyncCommands;
 		//adding pong
-		syncCommands['ping'] = pong;
+		hiddenSyncCommands['ping'] = pong;
+		//adding sudokuu
+		hiddenSyncCommands['sudoku'] = reboot;
+
 
 		//bot will log to stdout any messages sent even if we dont watch them
 		client.chat.join('devoluti0n');
@@ -90,32 +96,25 @@ function onMessageHandler(obj){
 	// get the channel
 	const chan = obj.channel;
 	// Split the message into individual words:
-	const parse = msg.slice(1).split(' ')
+	const parse = msg.slice(1).split(' ');
 
 	// The command name is the first (0th) one:
-	const commandName = parse[0]
+	const commandName = parse[0];
 	// The rest (if any) are the parameters:
-	const params = parse.splice(1)
-	// If the command is known, let's execute it:
+	const params = parse.splice(1);
+
+	let command;
+
 	if (commandName in syncCommands) {
-		// Retrieve the function by its name:
-		const command = syncCommands[commandName]
-		// Then call the command with parameters:
-		console.info(`* Executing ${commandName} command for ${obj.username}`);
-		command(chan, obj, params,commandName);
-		console.success(`* Executed ${commandName} command for ${obj.username}`);
-		// Add the user to the usersCD array, only if not mod tho
-		if ( obj.tags.mod === '0' && (('#' + obj.username)  !== obj.channel)){
-			usersCD.push(obj.username);
-			setTimeout( ()  => { 
-					let temp = usersCD.filter( (value,index,arr) => { return value !== obj.username    }  );
-					usersCD = temp;
-			
-				 }, process.env.BOT_COMMANDS_COOLDOWN || 10000  ); 
-		}
+		command = syncCommands[commandName];
 	} else if (commandName in asyncCommands) {
-		// Retrieve the function by its name:
-		const command = asyncCommands[commandName]
+		command = asyncCommands[commandName];
+	} else if (commandName in hiddenSyncCommands){
+		command = hiddenSyncCommands[commandName];
+	}
+
+	if (command != null){ // null == undefined ppHop
+
 		// Then call the command with parameters:
 		console.info(`* Executing ${commandName} command for ${obj.username}`);
 		command(chan, obj, params,commandName);
@@ -129,6 +128,7 @@ function onMessageHandler(obj){
 			
 				 }, process.env.BOT_COMMANDS_COOLDOWN || 10000  ); 
 		}
+
 	} else {
 		console.warn(`* Unknown command ${commandName} from ${obj.username}`);
 	}
@@ -191,6 +191,24 @@ function pong(target,obj,params,commandsName){
 	util.sendMessage(target,msg);
 
 }
+
+function reboot(target,obj,params,commandsName){
+	let util = require ('./util.js');
+	let msg = "Committing sudoku.. docker will reboot me BlessRNG";
+	
+	if (obj.username !== "devoluti0n"){
+		msg = "Nice try... Jebaited";	
+		util.sendMessage(target,msg);
+
+	}else{
+			
+	
+
+		util.sendMessage(target,msg);
+		setTimeout( ()=> {process.exit(2)}, 1000);
+	}
+}
+
 
 /*dd
 

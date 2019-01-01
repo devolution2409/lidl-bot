@@ -22,10 +22,24 @@ function searchForLogs(channel,context,params,commandName){
 
 	const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
 	//channel contain # we need to remove it
-	//let url = "https://overrustlelogs.net/" + channel.substr(1) + "%20chatlog/" + monthNames[month]  + "%20" + year  +"/userlogs/" + context.username + ".txt"
-	let url = "https://overrustlelogs.net/" + "forsen" + "%20chatlog/" + monthNames[month]  + "%20" + year  +"/userlogs/" + context.username + ".txt"
+	//let url = "https://overrustlelogs.net/" + channel.substr(1) + "%20chatlog/" + monthNames[month]  + "%20" + year  +"/userlogs/" + context.username + ".txt"i
+	
+	let username;
 
-		console.log(url);
+	if (params){
+		//username should be params[0]
+		if (params[0].substr(0,1) === '@'){
+			username = params[0].substr(1);
+		} else {
+			username = params[0];
+		}
+	} else{
+		username = context.username;
+	}
+
+
+	let url = "https://overrustlelogs.net/" + channel + "%20chatlog/" + monthNames[month]  + "%20" + year  +"/userlogs/" + username + ".txt"
+	console.log(url);
 	https.get(url, (resp) => {
 			let data = '';
 			let msg = '';
@@ -46,7 +60,7 @@ function searchForLogs(channel,context,params,commandName){
 	
 							msg = 'No logs for this user'						
 						}else{
-							let enablers = new RegExp( /nigger|nigg|nig|niger|nigeria|nibba|nibb|snicker|asteroid 8766|pewdiepie|bridge|книга|book in russian|negro|kneegro|kneeger|kneegur/, 'mi');
+							let enablers = new RegExp( /nigger|nigg|\bnig\b|niger|nigeria|nibba|nibb|snicker|asteroid 8766|pewdiepie|bridge|книга|book in russian|negro|kneegro|kneeger|kneegur|^(\s)*N(\s)*$/, 'mi');
 							
 							var checkLogs = (array) => {
 								let lacist = 0;
@@ -67,7 +81,7 @@ function searchForLogs(channel,context,params,commandName){
 								console.log(logs[k]);
 
 							} else {
-								util.sendMessage(channel, "Nothing to snitch on for user: FeelsGoodMan ";
+								util.sendMessage(channel, "Nothing to snitch on for user: FeelsGoodMan ");
 							}
 								
 

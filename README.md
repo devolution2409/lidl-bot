@@ -111,14 +111,17 @@ CMD ["node","app.js"]
 
 ```
 ### TODO
- 
- - [ ] ** Different folders for sync and async modules **
- - [ ] ** config collection with which channel and which commands are blacklisted for a given channel **
- - [ ] Standardize the way modules send back data?
- - [ ] Template for both async and sync modules
- - [ ] Add env variables to mongo-express so that the web interface requires login 
- - [ ] ** !reload command to reload the async modules and/or options **
- - [ ] Cooldown per user AND per channel
+(Order is irrelevant) 
+
+ 1. [x] **Different folders for sync and async modules**
+ 2. [ ] ** config collection with which channel and which commands are blacklisted for a given channel **
+ 3. [ ] Standardize the way modules send back data?
+ 4. [ ] Template for both async and sync modules
+ 5. [ ] Add env variables to mongo-express so that the web interface requires login 
+ 6. [x] **!reload command to reload the async modules and/or options**
+ 7. [ ] Cooldown per user AND per channel
+ 8. [ ] Another array for hidden command that wont be displayed in !help (like !reload)
+ 9. [ ] !help should also ignore blacklisted channel (see 2.)
 
 ## Built With
 
