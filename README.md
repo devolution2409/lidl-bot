@@ -124,6 +124,7 @@ CMD ["node","app.js"]
 9. [ ] !help should also ignore blacklisted channel (see 2.)
 10. [ ] List of admin in the config collection **Only admins should be able to run hiddenSyncCommands or hiddenAsyncCommands**
 
+
 ## Built With
 
 * Node.js
