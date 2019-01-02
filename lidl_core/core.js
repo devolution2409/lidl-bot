@@ -17,11 +17,13 @@ let usersCD = [] // forsenCD
 // Valid commands start with:
 let commandPrefix = '!'
 
+//we need to fetch the config
+let config = require('./config.js');
+
 //fetching the client
 let client = require('./client.js');
 const glob = require('glob');
 const path = require('path');
-
 // is client connected here?
 // We use promise to only execute the following if client is connected
 client.chat.connect().then(function(){
@@ -59,13 +61,26 @@ client.chat.connect().then(function(){
 		hiddenSyncCommands['ping'] = pong;
 		//adding sudokuu
 		hiddenSyncCommands['sudoku'] = reboot;
+		
 
+
+/*		config.getConfig();
+		config.promise.then( (data) => {
+			console.log(data)
+			if (data.hasOwnProperty('botAdmins')){
+				botAdmins = data['botAdmins'];
+		
+
+	
+			}
+		});
+*/
 
 		//bot will log to stdout any messages sent even if we dont watch them
 		client.chat.join('devoluti0n');
 		//client.chat.join('forsen');
-		client.chat.join('pajlada');
-		client.chat.join('forsen');
+//		client.chat.join('pajlada');
+//		client.chat.join('forsen');
 		client.chat.on('PRIVMSG', onMessageHandler);
 		// we can always specialize that later if needed
 		// anyway, the obj.command var will contain WHISPER or PRIVMSG
@@ -110,7 +125,8 @@ function onMessageHandler(obj){
 	} else if (commandName in asyncCommands) {
 		command = asyncCommands[commandName];
 	} else if (commandName in hiddenSyncCommands){
-		command = hiddenSyncCommands[commandName];
+		console.log('bot admins here:(jebaited closure' + botAdmins);
+		//command = hiddenSyncCommands[commandName];
 	}
 
 	if (command != null){ // null == undefined ppHop
@@ -208,6 +224,9 @@ function reboot(target,obj,params,commandsName){
 		setTimeout( ()=> {process.exit(2)}, 1000);
 	}
 }
+
+
+
 
 
 /*dd
