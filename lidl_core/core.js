@@ -12,13 +12,14 @@ let asyncCommands = {};
 let hiddenSyncCommands = {};
 
 //declaring an array containing the users cooling down
-let usersCD = [] // forsenCD
+let usersCD = []; // forsenCD
 
 // Valid commands start with:
-let commandPrefix = '!'
+let commandPrefix = '!';
 
 //we need to fetch the config
 let config = require('./config.js');
+let botAdmins = [];
 
 //fetching the client
 let client = require('./client.js');
@@ -57,30 +58,33 @@ client.chat.connect().then(function(){
 		syncCommands['help'] =  showAvailableCommands;		
 		//adding reload command:
 		hiddenSyncCommands['reload'] = reloadAsyncCommands;
-		//adding pong
-		hiddenSyncCommands['ping'] = pong;
 		//adding sudokuu
 		hiddenSyncCommands['sudoku'] = reboot;
+		// state 1 = config is fetched, 0 it's not yet fetched
 		
 
+		if (config.state === 1){
+			config.channels.forEach( (channel) => {
+				if (channel.hasOwnProperty('name')){
+					client.chat.join(channel['name']);
+				}
+				if (config.botAdmins.length){
+					botAdmins = config.botAdmins;
+				}
+			});
 
-/*		config.getConfig();
-		config.promise.then( (data) => {
-			console.log(data)
-			if (data.hasOwnProperty('botAdmins')){
-				botAdmins = data['botAdmins'];
-		
-
-	
-			}
-		});
-*/
+		} else if (config.state === 0) {
+			config.promise.then( () => {
+				if (channel.hasOwnProperty('name')){
+					client.chat.join(channel['name']);
+				}
+				if (config.botAdmins.length){
+					botAdmins = config.botAdmins;
+				}
+			});
+		}
 
 		//bot will log to stdout any messages sent even if we dont watch them
-		client.chat.join('devoluti0n');
-		//client.chat.join('forsen');
-//		client.chat.join('pajlada');
-//		client.chat.join('forsen');
 		client.chat.on('PRIVMSG', onMessageHandler);
 		// we can always specialize that later if needed
 		// anyway, the obj.command var will contain WHISPER or PRIVMSG
@@ -93,6 +97,7 @@ client.chat.connect().then(function(){
 });
 
 function onMessageHandler(obj){
+	let util = require('./util.js');
 	if (obj.isSelf) { return } // Ignore messages from the bot	
 	// get the msg
 	const msg = obj.message;
@@ -125,9 +130,15 @@ function onMessageHandler(obj){
 	} else if (commandName in asyncCommands) {
 		command = asyncCommands[commandName];
 	} else if (commandName in hiddenSyncCommands){
-		console.log('bot admins here:(jebaited closure' + botAdmins);
-		//command = hiddenSyncCommands[commandName];
+		if (botAdmins.includes(obj.username)){
+			command = hiddenSyncCommands[commandName];
+		} else {
+			console.log(botAdmins);
+			util.sendMessage(chan, obj.username + " is not in the sudoers file. This incident will be reported.");
+			return;
+		}
 	}
+
 
 	if (command != null){ // null == undefined ppHop
 
@@ -167,8 +178,10 @@ function showAvailableCommands(target,obj,params,commandName){
 
 }
 
-function reloadAsyncCommands(){
+function reloadAsyncCommands(target,obj,params,commandName){
 		asyncCommands = {} ;
+		let util = require('./util.js');
+		//util.sendMessage(target, "Reloading async modules..");
 		console.info('[LIDLBot] \t Importing ASYNC modules:');
 		glob.sync('./lidl_modules/async/*.js').forEach( function(file){
 						// need to invalidate cache afterwards, else it will just import the same cached variables
@@ -201,28 +214,13 @@ function reloadAsyncCommands(){
 }
 
 
-function pong(target,obj,params,commandsName){
-	let util = require ('./util.js');
-	let msg = "I'm here :wave: forsenE";
-	util.sendMessage(target,msg);
 
-}
 
 function reboot(target,obj,params,commandsName){
 	let util = require ('./util.js');
 	let msg = "Committing sudoku.. docker will reboot me BlessRNG";
-	
-	if (obj.username !== "devoluti0n"){
-		msg = "Nice try... Jebaited";	
-		util.sendMessage(target,msg);
-
-	}else{
-			
-	
-
-		util.sendMessage(target,msg);
-		setTimeout( ()=> {process.exit(2)}, 1000);
-	}
+	util.sendMessage(target,msg);
+	setTimeout( ()=> {process.exit(2)}, 1000);
 }
 
 

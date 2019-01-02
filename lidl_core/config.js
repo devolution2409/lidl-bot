@@ -12,12 +12,13 @@ class commandsWrapper{
 		this.botAdmins = [];
 		this.channels = [];
 		this.getConfig();
+		this.state = 0; // 0: not ready 1: ready 2: error
 	}
 	// needed so the commands can be reloaded
 	getConfig(){
 		let schema = mongoose.Schema({
 				"botAdmins": Object,
-				"channel": Object},{collection:'options'});
+				"channel": Object},{collection:'config'});
 /*					{
 						"enabled": Boolean,
 						"name": String,
@@ -35,34 +36,36 @@ class commandsWrapper{
 
 		let model
 			try {
-				model = mongoose.model('option');
+				model = mongoose.model('config');
 
 			} catch (error){
-				model = mongoose.model('option',schema);
+				model = mongoose.model('config',schema);
 			}
 		this.promise  = new Promise( (resolve,reject) => {
 				var promise = () => { 
 				model.find({},'-_id').lean().exec( (err,data) => {
 						if (err){
+						this.state = 2; // error
 						reject(err);
-
+						console.error(err);
+						process.exit(3);		
 						}else{
 							data.forEach( (thing) =>{
-								console.log(Object.keys(thing));
+								//console.log(Object.keys(thing));
 								if (thing.hasOwnProperty('botAdmins')){
-									console.log('HANDSUP');
+								//	console.log('HANDSUP');
 									// performances monkaS :point_right: :chart_with_upwards_trend:
 									Array.prototype.push.apply(this.botAdmins, thing['botAdmins']);
-									console.log(this.botAdmins);
+								//	console.log(this.botAdmins);
 								}
 								if (thing.hasOwnProperty('channel')){
 								//	Array.prototype.push.apply(this.channels, thing['channel']);
 									this.channels.push(thing['channel']);
-									console.log(this.channels);
+								//	console.log(this.channels);
 								}
 								
 							});
-			
+							this.state = 1;
 							resolve();
 						}
 	
