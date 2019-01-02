@@ -35,7 +35,7 @@ client.chat.connect().then(function(){
 		// we can load the modules
 		//requiring every file in the lidl_modules folder
 		console.info('[LIDLBot] \t Importing SYNC modules:');
-
+		//glob workdir is the workdir from docker, so . i think FeelsWeirdMan
 		glob.sync('./lidl_modules/sync/*.js').forEach( function(file){
 					   	var module = require(path.resolve(file));
 						
@@ -181,7 +181,7 @@ function showAvailableCommands(target,obj,params,commandName){
 function reloadAsyncCommands(target,obj,params,commandName){
 		asyncCommands = {} ;
 		let util = require('./util.js');
-		//util.sendMessage(target, "Reloading async modules..");
+		let driver = require('./MongoDriver.js');
 		console.info('[LIDLBot] \t Importing ASYNC modules:');
 		glob.sync('./lidl_modules/async/*.js').forEach( function(file){
 						// need to invalidate cache afterwards, else it will just import the same cached variables

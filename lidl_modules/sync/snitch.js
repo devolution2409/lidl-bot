@@ -25,8 +25,9 @@ function searchForLogs(channel,context,params,commandName){
 	//let url = "https://overrustlelogs.net/" + channel.substr(1) + "%20chatlog/" + monthNames[month]  + "%20" + year  +"/userlogs/" + context.username + ".txt"i
 	
 	let username;
-
-	if (params){
+	let chan;
+	if (params.length && params.join(' ').trim() !== '' ){
+		console.log("params:'" + params + "'");
 		//username should be params[0]
 		if (params[0].substr(0,1) === '@'){
 			username = params[0].substr(1);
@@ -37,9 +38,15 @@ function searchForLogs(channel,context,params,commandName){
 		username = context.username;
 	}
 
+	if (channel.substr(0,1) === '#'){
+		chan = channel.substr(1);
+	} else{
+		chan = channel;
+	}
 
-	let url = "https://overrustlelogs.net/" + channel + "%20chatlog/" + monthNames[month]  + "%20" + year  +"/userlogs/" + username + ".txt"
-	console.log(url);
+//	let url = "https://overrustlelogs.net/" + channel + "%20chatlog/" + monthNames[month]  + "%20" + year  +"/userlogs/" + username + ".txt"
+
+let url = "https://api.gempir.com/channel/" + chan + "/user/" + username +  "/" + year + "/" +  month + 1;
 	https.get(url, (resp) => {
 			let data = '';
 			let msg = '';
@@ -50,17 +57,12 @@ function searchForLogs(channel,context,params,commandName){
 
 			// The whole response has been received. Print out the result.
 			resp.on('end', () => {
-					//					console.log(data);
-
 					let logs = data.split(/[\r\n]+/);
 					if (data.length){
-
-						
-						if (logs[0] == "didn't find any logs for this user"){
-	
+						if (logs[0].includes("Failure reading log")){
 							msg = 'No logs for this user'						
 						}else{
-							let enablers = new RegExp( /nigger|nigg|\bnig\b|niger|nigeria|nibba|nibb|snicker|asteroid 8766|pewdiepie|bridge|книга|book in russian|negro|kneegro|kneeger|kneegur|^(\s)*N(\s)*$/, 'mi');
+							let enablers = new RegExp( /nigger|nigg|\bnig\b|niger|nigeria|nibba|nibb|snicker|asteroid 8766|pewdiepie|bridge|книга|book in russian|negro|kneegro|kneeger|kneegur|(\s|\.|\-|\_|\\|\/)*n(\s|\.|\-|\_|\\|\/)*i(\s|\.|\-|\_|\\|\/)*g(\s|\.|\-|\_|\\|\/)*g(\s|\.|\-|\_|\\|\/)*e(\s|\.|\-|\_|\\|\/)*r(\s|\.|\-|\_|\\|\/)*/, 'mi');
 							
 							var checkLogs = (array) => {
 								let lacist = 0;
@@ -75,19 +77,19 @@ function searchForLogs(channel,context,params,commandName){
 							};
 							let k = checkLogs(logs)
 							if (k){
-								util.sendMessage(channel, "Found something, sending PM cmonBruh");
+								msg =  "Found something, sent PM cmonBruh";
 								util.sendWhisper(context.username, logs[k]);
 								console.log('HYPERBRUH !');
 								console.log(logs[k]);
 
 							} else {
-								util.sendMessage(channel, "Nothing to snitch on for user: FeelsGoodMan ");
+								msg = "Nothing to snitch on for user: FeelsGoodMan ";
 							}
 								
 
 
 						}
-	
+							util.sendMessage(channel,msg);	
 					}
 
 //					console.log(logs);
