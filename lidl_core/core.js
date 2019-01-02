@@ -134,7 +134,7 @@ function onMessageHandler(obj){
 			command = hiddenSyncCommands[commandName];
 		} else {
 			console.log(botAdmins);
-			util.sendMessage(chan, obj.username + " is not in the sudoers file. This incident will be reported.");
+			util.sendMessage(chan, obj.username + " is not in the sudoers file. This incident will be reported forsenSheffy");
 			return;
 		}
 	}
