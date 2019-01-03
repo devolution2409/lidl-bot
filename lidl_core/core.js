@@ -93,7 +93,7 @@ function onMessageHandler(obj){
 	// ignoring blacklisted commands, except for admins forsenE
 	if (blacklistedCommands[chan.substr(1)] != null && blacklistedCommands[chan.substr(1)].includes(commandName) && !botAdmins.includes(obj.username)){
 		console.warn(`* Ignored command ${commandName} from ${obj.username}: command is blacklisted`);
-		util.sendMessage(chan, obj.username + ", this command is blacklisted here forsenT !");
+		util.sendMessage(chan, obj.username + ", Can't use that here, this command is blacklisted here forsenL ");
 		return;	
 	}
 

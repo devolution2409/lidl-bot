@@ -25,10 +25,10 @@ function getLogsUrl(channel,context,params,commandName){
 	//let url = "https://overrustlelogs.net/" + channel.substr(1) + "%20chatlog/" + monthNames[month]  + "%20" + year  +"/userlogs/" + context.username + ".txt"i
 	
 	let username;
-
-	if (params){
+	// this is retarded... even if no params it sends ' ' as a param
+	if (params && params.join(' ').trim() !== ''){
 		//username should be params[0]
-		if (params[0].substr(0,1) === '@'){
+		if ( params[0].substr(0,1) === '@'){
 			username = params[0].substr(1);
 		} else {
 			username = params[0];
@@ -40,6 +40,7 @@ function getLogsUrl(channel,context,params,commandName){
 		}
 	} else{
 		username = context.username;
+		chan = channel.substr(1);
 	}
 
 
