@@ -76,6 +76,15 @@ services:
 To generate an OAUTH token that will be valid for the bot, please login in to twitch with the bot account, and go to this page: https://twitchapps.com/tmi/ .
 Click generate and voila.
 
+#### Default admin commands
+
+To run this commands, one must be into the config.botAdmins array, or the bot will ignore it.
+
+- `!reboot Will reboot the bot by process.exit(2); docker will then relaunch the bot if restart:always was specified`
+- `!reload <commands/config> will reload either commands or config`
+
+
+
 #### Additional info
 
 If you are using the provided docker-compose file, and the mongoDB image throws some error, you can try to use the provided `clean_docker_garbage.sh` script.

@@ -11,11 +11,10 @@ class commandsWrapper{
 	constructor(){
 		this.botAdmins = [];
 		this.channels = [];
-		this.getConfig();
-		this.state = 0; // 0: not ready 1: ready 2: error
+		//this.GetConfig();
 	}
 	// needed so the commands can be reloaded
-	getConfig(){
+	GetConfig(){
 		let schema = mongoose.Schema({
 				"botAdmins": Object,
 				"channel": Object},{collection:'config'});
@@ -41,11 +40,10 @@ class commandsWrapper{
 			} catch (error){
 				model = mongoose.model('config',schema);
 			}
-		this.promise  = new Promise( (resolve,reject) => {
+		this.config  = new Promise( (resolve,reject) => {
 				var promise = () => { 
 				model.find({},'-_id').lean().exec( (err,data) => {
 						if (err){
-						this.state = 2; // error
 						reject(err);
 						console.error(err);
 						process.exit(3);		
@@ -53,20 +51,18 @@ class commandsWrapper{
 							data.forEach( (thing) =>{
 								//console.log(Object.keys(thing));
 								if (thing.hasOwnProperty('botAdmins')){
-								//	console.log('HANDSUP');
-									// performances monkaS :point_right: :chart_with_upwards_trend:
 									Array.prototype.push.apply(this.botAdmins, thing['botAdmins']);
-								//	console.log(this.botAdmins);
 								}
 								if (thing.hasOwnProperty('channel')){
-								//	Array.prototype.push.apply(this.channels, thing['channel']);
 									this.channels.push(thing['channel']);
-								//	console.log(this.channels);
 								}
 								
 							});
-							this.state = 1;
-							resolve();
+							let config = {
+								botAdmins: this.botAdmins,
+								channels: this.channels
+							};
+							resolve(config);
 						}
 	
 						});

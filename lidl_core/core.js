@@ -18,8 +18,9 @@ let usersCD = []; // forsenCD
 let commandPrefix = '!';
 
 //we need to fetch the config
-let config = require('./config.js');
+//let config = require('./config.js');
 let botAdmins = [];
+let channels = [];
 
 //fetching the client
 let client = require('./client.js');
@@ -57,32 +58,12 @@ client.chat.connect().then(function(){
 		//adding help command:
 		syncCommands['help'] =  showAvailableCommands;		
 		//adding reload command:
-		hiddenSyncCommands['reload'] = reloadAsyncCommands;
+		hiddenSyncCommands['reload'] = reload;
 		//adding sudokuu
 		hiddenSyncCommands['sudoku'] = reboot;
 		// state 1 = config is fetched, 0 it's not yet fetched
 		
 
-		if (config.state === 1){
-			config.channels.forEach( (channel) => {
-				if (channel.hasOwnProperty('name')){
-					client.chat.join(channel['name']);
-				}
-				if (config.botAdmins.length){
-					botAdmins = config.botAdmins;
-				}
-			});
-
-		} else if (config.state === 0) {
-			config.promise.then( () => {
-				if (channel.hasOwnProperty('name')){
-					client.chat.join(channel['name']);
-				}
-				if (config.botAdmins.length){
-					botAdmins = config.botAdmins;
-				}
-			});
-		}
 
 		//bot will log to stdout any messages sent even if we dont watch them
 		client.chat.on('PRIVMSG', onMessageHandler);
@@ -91,7 +72,8 @@ client.chat.connect().then(function(){
 		client.chat.on('WHISPER',  onMessageHandler);
 
 
-
+		//fetching config, including bot admins and channels:
+		reloadConfig();
 
 	
 });
@@ -133,7 +115,7 @@ function onMessageHandler(obj){
 		if (botAdmins.includes(obj.username)){
 			command = hiddenSyncCommands[commandName];
 		} else {
-			console.log(botAdmins);
+			console.warn(`* Ignored command ${commandName} from ${obj.username}: not a sudoer`);
 			util.sendMessage(chan, obj.username + " is not in the sudoers file. This incident will be reported forsenSheffy");
 			return;
 		}
@@ -213,7 +195,16 @@ function reloadAsyncCommands(target,obj,params,commandName){
 
 }
 
-
+function reload(target,obj,params,commandName){
+	if (params.length && params.join(' ').trim() !== '' ){
+                if (params.includes('commands')){
+                        reloadAsyncCommands();
+                }
+		if (params.includes('config')){
+                        reloadConfig();
+                }
+        }
+}
 
 
 function reboot(target,obj,params,commandsName){
@@ -223,7 +214,37 @@ function reboot(target,obj,params,commandsName){
 	setTimeout( ()=> {process.exit(2)}, 1000);
 }
 
+function reloadConfig(target,obj,params,commandName){
+	console.warn('[LIDLBot]\tReloading config..');
+	//unvalidating previous config:
+	botAdmins = [];
+	channels = [];
 
+	let module = require('./config.js');
+	module.GetConfig();
+	// if the module.config object  is a promise we are good to go
+	if (module.config !== undefined && Promise.resolve(module.config) == module.config){
+			module.config.then( (data) => {
+				botAdmins = data.botAdmins;
+				channels = data.channels;	
+				// we need to re-joins the channels, they might have changed
+				joinChannels();	
+				console.success('[LIDLBot]\tDone reloading config..');			
+			}); // end then() 
+			
+			// no need for catch block because config.js will process.exit on error	
+	}			
+	
+
+}
+
+function joinChannels(){
+	channels.forEach( (channel) => {
+		if (channel.hasOwnProperty('name')){
+			client.chat.join(channel['name']);
+		}	
+	});
+}
 
 
 
