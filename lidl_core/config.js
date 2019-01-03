@@ -12,6 +12,7 @@ class commandsWrapper{
 		this.botAdmins = [];
 		this.channels = [];
 		//this.GetConfig();
+		this.blacklistedCommands = [];
 	}
 	// needed so the commands can be reloaded
 	GetConfig(){
@@ -55,12 +56,16 @@ class commandsWrapper{
 								}
 								if (thing.hasOwnProperty('channel')){
 									this.channels.push(thing['channel']);
+									// if hasownpropertyblacklistedcommands ?
+
+									this.blacklistedCommands[thing['channel'].name] = thing['channel'].blacklistedCommands; 
 								}
 								
 							});
 							let config = {
 								botAdmins: this.botAdmins,
-								channels: this.channels
+								channels: this.channels,
+								blacklistedCommands: this.blacklistedCommands
 							};
 							resolve(config);
 						}

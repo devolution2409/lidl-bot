@@ -21,6 +21,8 @@ let commandPrefix = '!';
 //let config = require('./config.js');
 let botAdmins = [];
 let channels = [];
+let blacklistedCommands = [];
+
 
 //fetching the client
 let client = require('./client.js');
@@ -33,9 +35,9 @@ client.chat.connect().then(function(){
 		// OR we only load the modules that  dont need mongo Thonk
 
 
-		// getting the async commands 
-		reloadAsyncCommands();		
-
+		// calling reload() so we reload the commands		
+		reloadSyncCommands();
+		reloadAsyncCommands();
 
 		//adding help command:
 		syncCommands['help'] =  showAvailableCommands;		
@@ -86,8 +88,14 @@ function onMessageHandler(obj){
 	const commandName = parse[0];
 	// The rest (if any) are the parameters:
 	const params = parse.splice(1);
-
 	let command;
+	// chan contains #
+	// ignoring blacklisted commands, except for admins forsenE
+	if (blacklistedCommands[chan.substr(1)] != null && blacklistedCommands[chan.substr(1)].includes(commandName) && !botAdmins.includes(obj.username)){
+		console.warn(`* Ignored command ${commandName} from ${obj.username}: command is blacklisted`);
+		util.sendMessage(chan, obj.username + ", this command is blacklisted here forsenT !");
+		return;	
+	}
 
 	if (commandName in syncCommands) {
 		command = syncCommands[commandName];
@@ -225,14 +233,16 @@ function reloadConfig(target,obj,params,commandName){
 	//unvalidating previous config:
 	botAdmins = [];
 	channels = [];
-
+	blacklisted = [];
 	let module = require('./config.js');
 	module.GetConfig();
 	// if the module.config object  is a promise we are good to go
 	if (module.config !== undefined && Promise.resolve(module.config) == module.config){
 			module.config.then( (data) => {
 				botAdmins = data.botAdmins;
-				channels = data.channels;	
+				channels = data.channels;
+				// using an array to store blacklist so i can use .includes
+				blacklistedCommands = data.blacklistedCommands;	
 				// we need to re-joins the channels, they might have changed
 				joinChannels();	
 				console.success('[LIDLBot]\tDone reloading config..');			
