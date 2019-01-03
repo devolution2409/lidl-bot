@@ -80,8 +80,8 @@ Click generate and voila.
 
 To run this commands, one must be into the config.botAdmins array, or the bot will ignore it.
 
-- `!reboot Will reboot the bot by process.exit(2); docker will then relaunch the bot if restart:always was specified`
-- `!reload <commands/config> will reload either commands or config`
+- `!reboot` Will reboot the bot by process.exit(2); docker will then relaunch the bot if restart:always was specified
+- `!reload <commands/config>` will reload either commands or config
 
 
 
@@ -120,10 +120,11 @@ CMD ["node","app.js"]
 
 ```
 ### TODO
+
 (Order is irrelevant) 
 
 1. [x] **Different folders for sync and async modules**
-2. [ ] **config collection with which channel and which commands are blacklisted for a given channel**
+2. [x] **config collection with which channel and which commands are blacklisted for a given channel**
 3. [ ] Standardize the way modules send back data?
 4. [ ] Template for both async and sync modules
 5. [ ] Add env variables to mongo-express so that the web interface requires login 
@@ -131,10 +132,10 @@ CMD ["node","app.js"]
 7. [ ] Cooldown per user AND per channel
 8. [ ] Another array for hidden command that wont be displayed in !help (like !reload)
 9. [ ] !help should also ignore blacklisted channel (see 2.)
-10. [ ] List of admin in the config collection **Only admins should be able to run hiddenSyncCommands or hiddenAsyncCommands**
+10. [x] List of admin in the config collection **Only admins should be able to run hiddenSyncCommands or hiddenAsyncCommands**
 11. [ ] **Adding a folder for "admin only" commands in lidl_core**
 12. [ ] Move all mongoose schema to a single file
-13. [ ] Object to hold all the config (ie admins channels etc) ? Might not be needed but eshrug
+13. [x] Object to hold all the config (ie admins channels etc) ? Might not be needed but eshrug
 
 ## Built With
 
