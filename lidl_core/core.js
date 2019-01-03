@@ -32,24 +32,6 @@ client.chat.connect().then(function(){
 		//if we managed to connect to twitch, we try to connec to to mongo
 		// OR we only load the modules that  dont need mongo Thonk
 
-		// we managed to connnect both to twich AND to the mongoDB:
-		// we can load the modules
-		//requiring every file in the lidl_modules folder
-		console.info('[LIDLBot] \t Importing SYNC modules:');
-		//glob workdir is the workdir from docker, so . i think FeelsWeirdMan
-		glob.sync('./lidl_modules/sync/*.js').forEach( function(file){
-					   	var module = require(path.resolve(file));
-						
-					   	console.info(`[LIDLBot]\tImporting SYNC module ${file} !`);
-						// else it's a regular module
-							for (var funcName in module){
-								syncCommands[funcName] = module[funcName];
-								console.success(`[LIDLBot]\t\tSuccessfully registered ${funcName} command !`);
-							}
-						
-						console.success(`[LIDLBot]\tSuccessfully imported ${file} module !`);
-						
-		});
 
 		// getting the async commands 
 		reloadAsyncCommands();		
@@ -159,9 +141,29 @@ function showAvailableCommands(target,obj,params,commandName){
 
 
 }
+function reloadSyncCommands(target,obj,params,commandName){
+	//invalidating previously stored commands
+	syncCommands = {};
+	//requiring every file in the lidl_modules folder
+	console.info('[LIDLBot] \t Importing SYNC modules:');
+	//glob workdir is the workdir from docker, so . i think FeelsWeirdMan
+	glob.sync('./lidl_modules/sync/*.js').forEach( function(file){
+	   	var module = require(path.resolve(file));	
+	   	console.info(`[LIDLBot]\tImporting SYNC module ${file} !`);
+		// else it's a regular module
+		for (var funcName in module){
+			syncCommands[funcName] = module[funcName];
+			console.success(`[LIDLBot]\t\tSuccessfully registered ${funcName} command !`);
+		}
+						
+		console.success(`[LIDLBot]\tSuccessfully imported ${file} module !`);
+						
+	});
+}
+
 
 function reloadAsyncCommands(target,obj,params,commandName){
-		asyncCommands = {} ;
+		asyncCommands = {};
 		let util = require('./util.js');
 		let driver = require('./MongoDriver.js');
 		console.info('[LIDLBot] \t Importing ASYNC modules:');
@@ -196,14 +198,18 @@ function reloadAsyncCommands(target,obj,params,commandName){
 }
 
 function reload(target,obj,params,commandName){
+	let util = require('./util.js');
 	if (params.length && params.join(' ').trim() !== '' ){
                 if (params.includes('commands')){
+			reloadSyncCommands();
                         reloadAsyncCommands();
                 }
 		if (params.includes('config')){
                         reloadConfig();
                 }
-        }
+        }else{
+		util.sendMessage(target, "@" + obj.username + ", usage is !reload commands or !reload config");
+	}
 }
 
 
