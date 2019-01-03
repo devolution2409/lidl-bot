@@ -1,6 +1,6 @@
 // url: "https://overrustlelogs.net/forsen%20chatlog/October%202018/userlogs/devoluti0n.txt"
 module.exports = {
-logs: getLogsUrl
+betterLogs: getLogsUrl
 }
 
 
@@ -33,10 +33,12 @@ function getLogsUrl(channel,context,params,commandName){
 		} else {
 			username = params[0];
 		}
-		if (params[1].substr(0,1) === '#'){
+		if (params[1] != null && params[1].length && params[1].substr(0,1) === '#'){
 			chan = params[1].substr(1);
-		}else if (params[1]){
+		}else if (params[1] != null && params[1].length){
 			chan = params[1];
+		}else{
+			chan = channel.substr(1);
 		}
 	} else{
 		username = context.username;

@@ -131,7 +131,7 @@ CMD ["node","app.js"]
 6. [x] **!reload command to reload the async modules and/or options**
 7. [ ] Cooldown per user AND per channel
 8. [x] Another array for hidden command that wont be displayed in !help (like !reload)
-9. [ ] !help should also ignore blacklisted commands (see 2.)
+9. [x] !help should also ignore blacklisted commands (see 2.)
 10. [x] List of admin in the config collection **Only admins should be able to run hiddenSyncCommands or hiddenAsyncCommands**
 11. [ ] **Adding a folder for "admin only" commands in lidl_core**
 12. [ ] Move all mongoose schema to a single file

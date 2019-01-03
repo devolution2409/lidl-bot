@@ -136,14 +136,17 @@ function onMessageHandler(obj){
 
 function showAvailableCommands(target,obj,params,commandName){
 	let util = require('./util.js');
-
+	let chan = obj.channel;
 	let msg = "Cooldown per user: " + (process.env.BOT_COMMANDS_COOLDOWN/1000 || 10000/1000)   + " seconds. Available commands are: "
 	for (var command in syncCommands){
-		msg = msg + "!" + command + " ";
+		if ( blacklistedCommands[chan.substr(1)] == null ||  (blacklistedCommands[chan.substr(1)] != null && !blacklistedCommands[chan.substr(1)].includes(command))){ 
+			msg = msg + "!" + command + " ";
+		}
 	}
 	for (var command in asyncCommands){
+		if ( blacklistedCommands[chan.substr(1)] == null ||  (blacklistedCommands[chan.substr(1)] != null && !blacklistedCommands[chan.substr(1)].includes(command))){ 
 		msg = msg + "!" + command + " ";
-
+		}
 	}	
 	util.sendMessage(target,  msg);
 
