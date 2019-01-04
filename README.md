@@ -53,23 +53,23 @@ services:
      depends_on:
        - mongo
      environment:
-#       MONGO_DB_USER: root
-#       MONGO_DB_PASSWORD: example
        MONGO_DB_HOST: mongo
        MONGO_DB_NAME: lidlbot
        BOT_USERNAME: lidler_bot
        OAUTH_TOKEN: wh2qh1sforsenExq69vnaby1s
+       BOT_COMMANDS_COOLDOWN: 10000 
+       BOT_COMMANDS_PREFIX: '!lidl '
+
 ```
   
 #### Environment Variables
 
 * `BOT_USERNAME` - The bot username
 * `OAUTH_TOKEN` - The bot OAUTH token with chat permission (see below). Will accept both the full token (oauth:token) or just the token part.
-* `MONGO_DB_USER` - The mongo db account username
-* `MONGO_DB_PASSWORD` - self-explainatory
 * `MONGO_DB_HOST` -  Hostname or url of the mongo db server. (without mongodb://) If you are using docker make sure that the mongo db container and the lidlbot are on the same user-defined network
 * `MONGO_DB_NAME` - Name of the database the bot will be using
-
+* `BOT_COMMDANDS_COOLDOWN` - 
+* `BOT_COMMANDS_PREFIX` - prefix of the bot commands, works with spaces
 
 #### OAUTH Token
 
@@ -136,6 +136,7 @@ CMD ["node","app.js"]
 11. [ ] **Adding a folder for "admin only" commands in lidl_core**
 12. [ ] Move all mongoose schema to a single file
 13. [x] Object to hold all the config (ie admins channels etc) ? Might not be needed but eshrug
+14. [x] Add an environnement variable to set the bot prefix
 
 ## Built With
 

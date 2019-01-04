@@ -15,7 +15,7 @@ let hiddenSyncCommands = {};
 let usersCD = []; // forsenCD
 
 // Valid commands start with:
-let commandPrefix = '!';
+let commandPrefix = process.env.BOT_COMMANDS_PREFIX || '!';
 
 //we need to fetch the config
 //let config = require('./config.js');
@@ -40,14 +40,14 @@ client.chat.connect().then(function(){
 		reloadAsyncCommands();
 
 		//adding help command:
-		syncCommands['help'] =  showAvailableCommands;		
+		hiddenSyncCommands['help'] = showAvailableCommands;
 		//adding reload command:
 		hiddenSyncCommands['reload'] = reload;
 		//adding sudokuu
 		hiddenSyncCommands['sudoku'] = reboot;
 		// state 1 = config is fetched, 0 it's not yet fetched
 		
-
+		
 
 		//bot will log to stdout any messages sent even if we dont watch them
 		client.chat.on('PRIVMSG', onMessageHandler);
@@ -69,7 +69,7 @@ function onMessageHandler(obj){
 	const msg = obj.message;
 
 	// This isn't a command since it has no prefix:
-	if (msg.substr(0, 1) !== commandPrefix) {
+	if (msg.substr(0, commandPrefix.length) !== commandPrefix) {
 		return;
 	}	
 	// if the user is still in cooldown, we return
@@ -81,10 +81,10 @@ function onMessageHandler(obj){
 
 	// get the channel
 	const chan = obj.channel;
-	// Split the message into individual words:
-	const parse = msg.slice(1).split(' ');
-
-	// The command name is the first (0th) one:
+	// Split the message into individual words but removing the prefix before (in case it contains a space)
+	const parse = msg.substr(commandPrefix.length-1).slice(1).split(' ');
+	console.log(parse);
+	// The command name is the first (0th) one, but we need to remove the prefix
 	const commandName = parse[0];
 	// The rest (if any) are the parameters:
 	const params = parse.splice(1);
