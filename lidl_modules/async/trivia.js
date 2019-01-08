@@ -157,12 +157,7 @@ async function startTrivia(target, max){
 					// have to declare anonymous async function else we can't use AWAIT
 		(async () =>{ 	
 			 for (let i = 0; i < max; i++){
-					 // declaring this so the bot doesn't spam
-					 /*	let sleep = async  ((ms = 0) => {
-						return new Promise ( r => setTimeout(r,ms));
-
-						});
-					  */
+				await util.sleep(3000);	 
 				 let promise = () => { 
 					 return new Promise ( (resolve, reject) => {
 						let tempC = response[i]['category:'];
@@ -198,16 +193,18 @@ async function startTrivia(target, max){
 									reject();
 									 }, timeToAnswer);
 							 // TODO: add a thing in config for time to answer trivia
-					 });
-					 }
+					 	});
+					 } // ent let promise
+						
+
 					 await promise()
 						 // user found the answer
-						 .then( (obj) => {
+						 .then( async (obj) => {
 								 util.sendMessage(target,"@" + obj.username + " is right, the answer was: '" + response[i].response + "'");
 								 //		await sleep(3000);
 								 })
 					 // user didn't find it PepeLaugh
-					 .catch( (error) => { 
+					 .catch( async (error) => { 
 							 util.sendMessage(target, "lol u guys suck the answer was '" + response[i].response + "'");
 							 //		await sleep(3000);
 							 });
