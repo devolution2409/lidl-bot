@@ -62,7 +62,7 @@ let url = "https://api.gempir.com/channel/" + chan + "/user/" + username +  "/" 
 						if (logs[0].includes("Failure reading log")){
 							msg = 'No logs for this user'						
 						}else{
-							let enablers = new RegExp( /nigger|nigg|\bnig\b|niger|nigeria|nibba|nibb|snicker|asteroid 8766|pewdiepie|bridge|книга|book in russian|negro|kneegro|kneeger|kneegur|(\s|\.|\-|\_|\\|\/)*n(\s|\.|\-|\_|\\|\/)*i(\s|\.|\-|\_|\\|\/)*g(\s|\.|\-|\_|\\|\/)*g(\s|\.|\-|\_|\\|\/)*e(\s|\.|\-|\_|\\|\/)*r(\s|\.|\-|\_|\\|\/)*/, 'mi');
+							let enablers = new RegExp( /nigger|nigg|\bnig\b|niger|nigeria|nibba|nibb|snicker|asteroid 8766|pewdiepie|bridge|книга|book in russian|negro|kneegro|kneeger|kneegur|(\s|\.|\-|\_|\\|\/)*n(\s|\.|\-|\_|\\|\/)*i(\s|\.|\-|\_|\\|\/)*g(\s|\.|\-|\_|\\|\/)*g(\s|\.|\-|\_|\\|\/)*e(\s|\.|\-|\_|\\|\/)*r(\s|\.|\-|\_|\\|\/)*|𝓷𝓲𝓰𝓰𝓮𝓻/, 'mi');
 							
 							var checkLogs = (array) => {
 								let lacist = 0;

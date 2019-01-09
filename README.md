@@ -129,7 +129,7 @@ CMD ["node","app.js"]
 4. [ ] Template for both async and sync modules
 5. [ ] Add env variables to mongo-express so that the web interface requires login 
 6. [x] **!reload command to reload the async modules and/or options**
-7. [ ] Cooldown per user AND per channel
+7. [ ] **Finish implementing Cooldown per user AND per channel** 
 8. [x] Another array for hidden command that wont be displayed in !help (like !reload)
 9. [x] !help should also ignore blacklisted commands (see 2.)
 10. [x] List of admin in the config collection **Only admins should be able to run hiddenSyncCommands or hiddenAsyncCommands**
@@ -137,6 +137,12 @@ CMD ["node","app.js"]
 12. [ ] Move all mongoose schema to a single file
 13. [x] Object to hold all the config (ie admins channels etc) ? Might not be needed but eshrug
 14. [x] Add an environnement variable to set the bot prefix
+15. [x] ~~Find a way, or create a smol wrapper to be able to register on unregister callbacks for the events~~ client.chat.unregisterEvent('event', callback);
+16. trivia
+   - [x] Add a little time between trivia question, answers and new questions. 
+   - [ ]Scoreboard.
+   - [ ] Variable in config (and env) to be able to set trivia time and timeOutOverride in json.
+   - [] **Prevent trivia from being run twice at the same time**
 
 ## Built With
 

@@ -13,6 +13,7 @@ class commandsWrapper{
 		this.channels = [];
 		//this.GetConfig();
 		this.blacklistedCommands = [];
+		this.channelsCooldown = [];
 	}
 	// needed so the commands can be reloaded
 	GetConfig(){
@@ -57,15 +58,23 @@ class commandsWrapper{
 								if (thing.hasOwnProperty('channel')){
 									this.channels.push(thing['channel']);
 									// if hasownpropertyblacklistedcommands ?
-
+										
+									// array is basically blacklistedCommands[pajlada] = ['blabla', 'otthercommannd'];
 									this.blacklistedCommands[thing['channel'].name] = thing['channel'].blacklistedCommands; 
+									// array is channelsCooldown[pajlada] = 4500
+									this.channelsCooldown[thing['channel'].name] = { 
+										channel: thing['channel'].botCooldown || process.env.BOT_COMMANDS_CHANNEL_DEFAULT_COOLDOWN,
+										user: thing['channel'].userCooldown || process.env.BOT_COMMANDS_USER_DEFAULT_COOLDOWN
+									}
+
 								}
 								
 							});
 							let config = {
 								botAdmins: this.botAdmins,
 								channels: this.channels,
-								blacklistedCommands: this.blacklistedCommands
+								blacklistedCommands: this.blacklistedCommands,
+								cooldowns: this.channelsCooldown					
 							};
 							resolve(config);
 						}

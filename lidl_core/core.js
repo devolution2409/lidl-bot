@@ -247,6 +247,7 @@ function reloadConfig(target,obj,params,commandName){
 				// using an array to store blacklist so i can use .includes
 				blacklistedCommands = data.blacklistedCommands;	
 				// we need to re-joins the channels, they might have changed
+				console.log(data); //forsenE
 				joinChannels();	
 				console.success('[LIDLBot]\tDone reloading config..');			
 			}); // end then() 
