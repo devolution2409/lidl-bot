@@ -143,7 +143,7 @@ CMD ["node","app.js"]
    - [ ]Scoreboard.
    - [ ] Variable in config (and env) to be able to set trivia time and timeOutOverride in json.
    - [] **Prevent trivia from being run twice at the same time**
-
+17. Switch env command prefix to env default prefix, add an option to be able to set bot prefix per channel (in the channel collection)
 ## Built With
 
 * Node.js
