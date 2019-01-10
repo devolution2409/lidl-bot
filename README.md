@@ -123,21 +123,21 @@ CMD ["node","app.js"]
 
 (Order is irrelevant) 
 
-[x] **Different folders for sync and async modules**
-[x] **config collection with which channel and which commands are blacklisted for a given channel**
-[ ] Standardize the way modules send back data?
-[ ] Template for both async and sync modules
-[ ] Add env variables to mongo-express so that the web interface requires login 
-[x] **!reload command to reload the async modules and/or options**
-[ ] **Finish implementing Cooldown per user AND per channel** 
-[x] Another array for hidden command that wont be displayed in !help (like !reload)
-[x] !help should also ignore blacklisted commands (see 2.)
-[x] List of admin in the config collection **Only admins should be able to run hiddenSyncCommands or hiddenAsyncCommands**
-[ ] **Adding a folder for "admin only" commands in lidl_core**
-[ ] Move all mongoose schema to a single file
-[x] Object to hold all the config (ie admins channels etc) ? Might not be needed but eshrug
-[x] Add an environnement variable to set the bot prefix
-[x] ~~Find a way, or create a smol wrapper to be able to register on unregister callbacks for the events~~ client.chat.unregisterEvent('event', callback);
+ [x] **Different folders for sync and async modules**
+ [x] **config collection with which channel and which commands are blacklisted for a given channel**
+ [ ] Standardize the way modules send back data?
+ [ ] Template for both async and sync modules
+ [ ] Add env variables to mongo-express so that the web interface requires login 
+ [x] **!reload command to reload the async modules and/or options**
+ [ ] **Finish implementing Cooldown per user AND per channel** 
+ [x] Another array for hidden command that wont be displayed in !help (like !reload)
+ [x] !help should also ignore blacklisted commands (see 2.)
+ [x] List of admin in the config collection **Only admins should be able to run hiddenSyncCommands or hiddenAsyncCommands**
+ [ ] **Adding a folder for "admin only" commands in lidl_core**
+ [ ] Move all mongoose schema to a single file
+ [x] Object to hold all the config (ie admins channels etc) ? Might not be needed but eshrug
+ [x] Add an environnement variable to set the bot prefix
+ [x] ~~Find a way, or create a smol wrapper to be able to register on unregister callbacks for the events~~ client.chat.unregisterEvent('event', callback);
 Trivia:
 - [x] Add a little time between trivia question, answers and new questions. 
 - [ ] Scoreboard.
