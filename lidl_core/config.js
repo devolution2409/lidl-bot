@@ -13,7 +13,7 @@ class commandsWrapper{
 		this.channels = [];
 		//this.GetConfig();
 		this.blacklistedCommands = [];
-		this.channelsCooldown = [];
+		this.channelsCooldowns = [];
 	}
 	// needed so the commands can be reloaded
 	GetConfig(){
@@ -62,7 +62,7 @@ class commandsWrapper{
 									// array is basically blacklistedCommands[pajlada] = ['blabla', 'otthercommannd'];
 									this.blacklistedCommands[thing['channel'].name] = thing['channel'].blacklistedCommands; 
 									// array is channelsCooldown[pajlada] = 4500
-									this.channelsCooldown[thing['channel'].name] = { 
+									this.channelsCooldowns[thing['channel'].name] = { 
 										channel: thing['channel'].botCooldown || process.env.BOT_COMMANDS_CHANNEL_DEFAULT_COOLDOWN,
 										user: thing['channel'].userCooldown || process.env.BOT_COMMANDS_USER_DEFAULT_COOLDOWN
 									}

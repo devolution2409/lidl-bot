@@ -22,7 +22,7 @@ let commandPrefix = process.env.BOT_COMMANDS_PREFIX || '!';
 let botAdmins = [];
 let channels = [];
 let blacklistedCommands = [];
-
+let channelsCooldown = [];
 
 //fetching the client
 let client = require('./client.js');
@@ -244,6 +244,7 @@ function reloadConfig(target,obj,params,commandName){
 			module.config.then( (data) => {
 				botAdmins = data.botAdmins;
 				channels = data.channels;
+				channelsCooldown = data.channelsCooldown;
 				// using an array to store blacklist so i can use .includes
 				blacklistedCommands = data.blacklistedCommands;	
 				// we need to re-joins the channels, they might have changed
