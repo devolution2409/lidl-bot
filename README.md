@@ -138,11 +138,11 @@ CMD ["node","app.js"]
 13. [x] Object to hold all the config (ie admins channels etc) ? Might not be needed but eshrug
 14. [x] Add an environnement variable to set the bot prefix
 15. [x] ~~Find a way, or create a smol wrapper to be able to register on unregister callbacks for the events~~ client.chat.unregisterEvent('event', callback);
-16. trivia
+ - trivia
    - [x] Add a little time between trivia question, answers and new questions. 
    - [ ]Scoreboard.
    - [ ] Variable in config (and env) to be able to set trivia time and timeOutOverride in json.
-   - [] **Prevent trivia from being run twice at the same time**
+   - [ ] **Prevent trivia from being run twice at the same time**
 17. Switch env command prefix to env default prefix, add an option to be able to set bot prefix per channel (in the channel collection)
 ## Built With
 
